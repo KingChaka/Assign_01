@@ -1,5 +1,9 @@
 *
-
 !.gitignore
-!W2_VehicleManageSys.cpp
+!Makefile
+
+!obj
+!src
+!src/include
+!src/main.cpp
 
