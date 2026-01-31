@@ -40,6 +40,7 @@ public:
     string getMaker() const { return maker; }
     string getModel() const { return model; }
     int getYear() const { return year; }
+    int getColor() const { return color; }
     double getWeight() const { return weight; }
     double getEngineSize() const { return engineSize; }
     void setEngineSize(double es) { engineSize = es; }
@@ -60,6 +61,18 @@ bool compareByWeight(Vehicle* a, Vehicle* b) {
     return a->getWeight() < b->getWeight();
 }
 
+bool compareByYear(Vehicle* a, Vehicle* b) {
+    return a->getYear() < b->getYear();
+}
+
+bool compareByColor(Vehicle* a, Vehicle* b) {
+    return a->getColor() < b->getColor();
+}
+
+bool compareByMaker(Vehicle* a, Vehicle* b) {
+    return a->getMaker() < b->getMaker();
+}
+
 int main() {
     int n;
     cout << "Enter number of vehicles: ";
@@ -67,12 +80,22 @@ int main() {
 
     Vehicle** vehicles = new Vehicle*[n];
 
+    // Dynamically Creates Vehicle Instances
+    /*
     for(short int i=0; i<n; i++){
-        vehicles[i] = new Vehicle("Toyota","Corolla",2020,RED,3000-100*i,"VIN_",MAR,1.8);
+        vehicles[i] = new Vehicle("M",2010Toyota","Corolla",2020-i,RED,3000-100*i,"VIN_",MAR,1.8);
     }
+    */
+
+    // hard-wired Vehicles
+    vehicles[0] = new Vehicle("Toyota","Corolla",2025,WHITE,3000,"VIN_009",MAR,1.8);
+    vehicles[1] = new Vehicle("Dodge","Avenger",1999,RED,2900,"VIN_007",MAR,1.8);
+    vehicles[2] = new Vehicle("Hyundai","Accent",2016,BLACK,2800,"VIN_005",MAR,1.8);
+    vehicles[3] = new Vehicle("Chevy","Cruze",2020,GREEN,2700,"VIN_004",MAR,1.8);
+    vehicles[4] = new Vehicle("Tesla","Model T",2010,BLUE,2600,"VIN_006",MAR,1.8);
 
     // Sorting example
-    sort(vehicles, vehicles+n, compareByWeight);
+    sort(vehicles, vehicles+n, compareByYear);
 
     cout << "\n--- Sorted Vehicles ---\n";
     for(int i=0;i<n;i++) {
