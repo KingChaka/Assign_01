@@ -68,7 +68,7 @@ int main() {
     Vehicle** vehicles = new Vehicle*[n];
 
     for(short int i=0; i<n; i++){
-        vehicles[i] = new Vehicle("Toyota","Corolla",2020,RED,1300,"VIN_",MAR,1.8);
+        vehicles[i] = new Vehicle("Toyota","Corolla",2020,RED,3000-100*i,"VIN_",MAR,1.8);
     }
 
     // Sorting example
