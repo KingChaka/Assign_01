@@ -12,7 +12,7 @@ typedef char VIN[20];
 enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
-string strColor[] = { "Red", "Blue", "Green", "Black", "White" };
+char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
 
 class Vehicle {
 private:
@@ -69,7 +69,11 @@ bool compareByYear(Vehicle* a, Vehicle* b) {
 }
 
 bool compareByColor(Vehicle* a, Vehicle* b) {
-    return a->getColor() < b->getColor();
+    bool isless = false;
+    if (strcmp(strColor[a->getColor()],strColor[b->getColor()]) < 0){
+        isless = true;
+    }
+    return isless;
 }
 
 bool compareByMaker(Vehicle* a, Vehicle* b) {
@@ -100,7 +104,13 @@ int main() {
     // Sorting example
     sort(vehicles, vehicles+n, compareByYear);
 
-    cout << "\n--- Sorted Vehicles ---\n";
+    cout << "\n--- Sorted Vehicles (by year) ---\n";
+    for(int i=0;i<n;i++) {
+        vehicles[i]->display();
+    }
+
+    sort(vehicles, vehicles+n, compareByColor);
+    cout << "\n--- Sorted Vehicles (by color) ---\n";
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
