@@ -12,6 +12,8 @@ typedef char VIN[20];
 enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
+string strColor[] = { "Red", "Blue", "Green", "Black", "White" };
+
 class Vehicle {
 private:
     string maker;
@@ -50,6 +52,7 @@ public:
         cout << "Maker: " << maker
              << " | Model: " << model
              << " | Year: " << year
+             << " | Color: " << strColor[color]
              << " | Weight: " << weight
              << " | Engine: " << engineSize << "L"
              << endl;
