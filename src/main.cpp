@@ -67,9 +67,9 @@ int main() {
 
     Vehicle** vehicles = new Vehicle*[n];
 
-    // Example: Hardcoded object creation (students expand to user input)
-    vehicles[0] = new Vehicle("Toyota","Corolla",2020,RED,1300,"VIN123",MAR,1.8);
-    vehicles[1] = new Vehicle("Honda","Civic",2019,BLUE,1250,"VIN456",JAN,2.0);
+    for(short int i=0; i<n; i++){
+        vehicles[i] = new Vehicle("Toyota","Corolla",2020,RED,1300,"VIN_",MAR,1.8);
+    }
 
     // Sorting example
     sort(vehicles, vehicles+n, compareByWeight);

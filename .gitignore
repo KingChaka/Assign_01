@@ -3,6 +3,8 @@
 !Makefile
 
 !obj
+!obj/main.o
+
 !src
 !src/include
 !src/main.cpp
