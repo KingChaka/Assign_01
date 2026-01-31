@@ -14,6 +14,7 @@ enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DE
 
 char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
 
+
 class Vehicle {
 private:
     string maker;
@@ -77,7 +78,13 @@ bool compareByColor(Vehicle* a, Vehicle* b) {
 }
 
 bool compareByMaker(Vehicle* a, Vehicle* b) {
-    return a->getMaker() < b->getMaker();
+    //return a->getMaker() < b->getMaker();
+    bool isless = false;
+    if(a->getMaker().compare(b->getMaker())<0){
+        isless = true;
+    }
+
+    return isless;
 }
 
 int main() {
@@ -111,6 +118,12 @@ int main() {
 
     sort(vehicles, vehicles+n, compareByColor);
     cout << "\n--- Sorted Vehicles (by color) ---\n";
+    for(int i=0;i<n;i++) {
+        vehicles[i]->display();
+    }
+
+    sort(vehicles, vehicles+n, compareByMaker);
+    cout << "\n--- Sorted Vehicles (by maker) ---\n";
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
