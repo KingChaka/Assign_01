@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <cstring> // for strcpy
+#include <iomanip> //to pretify the output
 using namespace std;
 
 // Typedef
@@ -50,10 +51,11 @@ public:
 
     // Display
     void display() const {
-        cout << "Maker: " << maker
-             << " | Model: " << model
+        cout.width(8);
+        cout << "Maker:"<< setw(9) << maker
+             << " | Model:"<< setw(9) << model
              << " | Year: " << year
-             << " | Color: " << strColor[color]
+             << " | Color:"<< setw(7) << strColor[color]
              << " | Weight: " << weight
              << " | Engine: " << engineSize << "L"
              << endl;
@@ -118,6 +120,12 @@ int main() {
 
     sort(vehicles, vehicles+n, compareByColor);
     cout << "\n--- Sorted Vehicles (by color) ---\n";
+    for(int i=0;i<n;i++) {
+        vehicles[i]->display();
+    }
+
+    sort(vehicles, vehicles+n, compareByWeight);
+    cout << "\n--- Sorted Vehicles (by weight) ---\n";
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
