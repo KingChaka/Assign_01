@@ -1,7 +1,7 @@
 
+#include <algorithm>
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <cstring> // for strcpy
 #include <iomanip> //to pretify the output
 using namespace std;
@@ -15,7 +15,7 @@ enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DE
 
 char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
 
-
+//Class
 class Vehicle {
 private:
     string maker;
@@ -53,11 +53,11 @@ public:
     void display() const {
         cout.width(8);
         cout << "Maker:"<< setw(9) << maker
-             << " | Model:"<< setw(9) << model
-             << " | Year: " << year
-             << " | Color:"<< setw(7) << strColor[color]
-             << " | Weight: " << weight
-             << " | Engine: " << engineSize << "L"
+             << " | Model: "<< setw(9) << model
+             << " | Year: "<< setw(4) << year
+             << " | Color: "<< setw(5) << strColor[color]
+             << " | Weight: "<< setw(4) << weight
+             << " | Engine: "<< setw(2) << engineSize << "L"
              << endl;
     }
 };
@@ -110,31 +110,36 @@ int main() {
     vehicles[3] = new Vehicle("Chevy","Cruze",2020,GREEN,2700,"VIN_004",MAR,1.8);
     vehicles[4] = new Vehicle("Tesla","Model T",2010,BLUE,2600,"VIN_006",MAR,1.8);
 
-    // Sorting example
-    sort(vehicles, vehicles+n, compareByYear);
+    cout << "\nHow do you wish to sort your vehicles?" << endl;
+    cout << "   1. Sort by maker.\n"
+    << "   2. Sort by year.\n"
+    << "   3. Sort by color.\n"
+    << "   4. Sort by weight.\n   ------------------> ";
+    
+    short int sortType; //consider changing to an enum later.
+    cin >> sortType;
+    cout << endl;
+    
+    //Sort
+    switch(sortType) {
+        case 1:
+            sort(vehicles, vehicles+n, compareByMaker);
+            break;
+        case 2:
+            sort(vehicles, vehicles+n, compareByYear);
+            break;
+        case 3:
+            sort(vehicles, vehicles+n, compareByColor);
+            break;
+        default:
+            sort(vehicles, vehicles+n, compareByWeight);
+    }
 
-    cout << "\n--- Sorted Vehicles (by year) ---\n";
+    // Display
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
-
-    sort(vehicles, vehicles+n, compareByColor);
-    cout << "\n--- Sorted Vehicles (by color) ---\n";
-    for(int i=0;i<n;i++) {
-        vehicles[i]->display();
-    }
-
-    sort(vehicles, vehicles+n, compareByWeight);
-    cout << "\n--- Sorted Vehicles (by weight) ---\n";
-    for(int i=0;i<n;i++) {
-        vehicles[i]->display();
-    }
-
-    sort(vehicles, vehicles+n, compareByMaker);
-    cout << "\n--- Sorted Vehicles (by maker) ---\n";
-    for(int i=0;i<n;i++) {
-        vehicles[i]->display();
-    }
+    cout << endl;
 
     // Cleanup
     for(int i=0;i<n;i++) delete vehicles[i];
