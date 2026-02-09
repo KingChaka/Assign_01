@@ -118,30 +118,30 @@ int main() {
         cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
         cin >> maker_input;
-        
+
         cout << "What model is the vehicle?  ";
         cin >> model_input;
-        
+
         cout << "What year is vehicle?  ";
         cin >> year_input;
-        
+
         cout << "What color is vehicle?";
         cout << "\n   1) Red?\n   2) Blue?";
         cout << "\n   3) Green?\n   4) Black?";
         cout << "\n   5) White?    ---------->  ";
         cin >> index;
         color_input = static_cast<Color>(index - 1);
-        
+
         cout << "How much does it weight (lbs)?  ";
         cin >> weight_input;
-        
+
         cout << "Vin number:  ";
         cin >> vin_input;
-        
+
         cout << "Purchase Month by # (ex: JAN = 1)?  ";
         cin >> index;
         month_input = static_cast<PurchaseMonth>(index);
-        
+
         cout << "Engine Size (L)?  ";
         cin >> size_input;
 
@@ -158,7 +158,7 @@ int main() {
     cin >> sortType;
     cout << endl;
 }
-        
+
     //Sort
     switch(sortType) {
         case 1:
