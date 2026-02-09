@@ -91,35 +91,75 @@ bool compareByMaker(Vehicle* a, Vehicle* b) {
 
 int main() {
     int n;
+
+    string maker_input;
+    string model_input;
+    int year_input;
+    Color color_input;
+    double weight_input;
+    VIN vin_input;
+    PurchaseMonth month_input;
+    double size_input;
+    short int sortType = 0; //consider changing to an enum later.
+
+
     cout << "Enter number of vehicles: ";
     cin >> n;
 
     Vehicle** vehicles = new Vehicle*[n];
 
     // Dynamically Creates Vehicle Instances
-    /*
     for(short int i=0; i<n; i++){
-        vehicles[i] = new Vehicle("M",2010Toyota","Corolla",2020-i,RED,3000-100*i,"VIN_",MAR,1.8);
+        //prompting
+        cout << "Who is the maker for vehicle #" << i+1 << "?  ";
+        cin >> maker_input;
+        
+        cout << "What model is the vehicle?  ";
+        cin >> model_input;
+        
+        cout << "What year is vehicle?  ";
+        cin >> year_input;
+        
+        //cout << "What color is vehicle?  ";
+        //cin >> strColor[color_input];
+        
+        cout << "How much does it weight?  ";
+        cin >> weight_input;
+        
+        cout << "Vin number:  ";
+        cin >> vin_input;
+        
+        //cout << "Purchase Month?  ";
+        //cin >> month_input;
+        
+        cout << "Engine Size?  ";
+        cin >> size_input;
+
+        vehicles[i] = new Vehicle(maker_input, model_input, year_input, RED, weight_input, vin_input, JAN, size_input);
     }
-    */
+    
 
     // hard-wired Vehicles
+    /*
     vehicles[0] = new Vehicle("Toyota","Corolla",2025,WHITE,3000,"VIN_009",MAR,1.8);
     vehicles[1] = new Vehicle("Dodge","Avenger",1999,RED,2900,"VIN_007",MAR,1.8);
     vehicles[2] = new Vehicle("Hyundai","Accent",2016,BLACK,2800,"VIN_005",MAR,1.8);
     vehicles[3] = new Vehicle("Chevy","Cruze",2020,GREEN,2700,"VIN_004",MAR,1.8);
     vehicles[4] = new Vehicle("Tesla","Model T",2010,BLUE,2600,"VIN_006",MAR,1.8);
+    */
 
+    if (n > 1){
     cout << "\nHow do you wish to sort your vehicles?" << endl;
     cout << "   1. Sort by maker.\n"
     << "   2. Sort by year.\n"
     << "   3. Sort by color.\n"
     << "   4. Sort by weight.\n   ------------------> ";
-    
-    short int sortType; //consider changing to an enum later.
+
+
     cin >> sortType;
     cout << endl;
-    
+}
+        
     //Sort
     switch(sortType) {
         case 1:

@@ -1,6 +1,7 @@
 *
 !.gitignore
 !Makefile
+!Assignment.pdf
 
 !obj
 !obj/main.o
