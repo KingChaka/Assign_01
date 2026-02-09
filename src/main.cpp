@@ -14,6 +14,7 @@ enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
 char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
+char strMonth[][10] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 
 //Class
 class Vehicle {
@@ -53,11 +54,13 @@ public:
     void display() const {
         cout.width(8);
         cout << "Maker:"<< setw(9) << maker
-             << " | Model: "<< setw(9) << model
-             << " | Year: "<< setw(4) << year
-             << " | Color: "<< setw(5) << strColor[color]
-             << " | Weight: "<< setw(4) << weight
-             << " | Engine: "<< setw(2) << engineSize << "L"
+             << " | Model: " << setw(6) << model
+             << " | Year: " << setw(4) << year
+             << " | Color: " << setw(5) << strColor[color]
+             << " | Weight: " << fixed << setprecision(0) << setw(4) << weight
+             << " | Engine: " << fixed << setprecision(1) << engineSize << "L"
+             << " | Month: " << setw(3) << strMonth[purchaseMonth]
+             << " | VIN: " << vin
              << endl;
     }
 };
@@ -91,6 +94,7 @@ bool compareByMaker(Vehicle* a, Vehicle* b) {
 
 int main() {
     int n;
+    int index;
 
     string maker_input;
     string model_input;
@@ -111,7 +115,8 @@ int main() {
     // Dynamically Creates Vehicle Instances
     for(short int i=0; i<n; i++){
         //prompting
-        cout << "Who is the maker for vehicle #" << i+1 << "?  ";
+        cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
         cin >> maker_input;
         
         cout << "What model is the vehicle?  ";
@@ -120,41 +125,35 @@ int main() {
         cout << "What year is vehicle?  ";
         cin >> year_input;
         
-        //cout << "What color is vehicle?  ";
-        //cin >> strColor[color_input];
+        cout << "What color is vehicle?";
+        cout << "\n   1) Red?\n   2) Blue?";
+        cout << "\n   3) Green?\n   4) Black?";
+        cout << "\n   5) White?    ---------->  ";
+        cin >> index;
+        color_input = static_cast<Color>(index - 1);
         
-        cout << "How much does it weight?  ";
+        cout << "How much does it weight (lbs)?  ";
         cin >> weight_input;
         
         cout << "Vin number:  ";
         cin >> vin_input;
         
-        //cout << "Purchase Month?  ";
-        //cin >> month_input;
+        cout << "Purchase Month by # (ex: JAN = 1)?  ";
+        cin >> index;
+        month_input = static_cast<PurchaseMonth>(index);
         
-        cout << "Engine Size?  ";
+        cout << "Engine Size (L)?  ";
         cin >> size_input;
 
-        vehicles[i] = new Vehicle(maker_input, model_input, year_input, RED, weight_input, vin_input, JAN, size_input);
+        vehicles[i] = new Vehicle(maker_input, model_input, year_input, color_input, weight_input, vin_input, month_input, size_input);
     }
-    
 
-    // hard-wired Vehicles
-    /*
-    vehicles[0] = new Vehicle("Toyota","Corolla",2025,WHITE,3000,"VIN_009",MAR,1.8);
-    vehicles[1] = new Vehicle("Dodge","Avenger",1999,RED,2900,"VIN_007",MAR,1.8);
-    vehicles[2] = new Vehicle("Hyundai","Accent",2016,BLACK,2800,"VIN_005",MAR,1.8);
-    vehicles[3] = new Vehicle("Chevy","Cruze",2020,GREEN,2700,"VIN_004",MAR,1.8);
-    vehicles[4] = new Vehicle("Tesla","Model T",2010,BLUE,2600,"VIN_006",MAR,1.8);
-    */
-
-    if (n > 1){
+    if (n > 1){                                                                 // Sorting unneeded if only one vehicle entered
     cout << "\nHow do you wish to sort your vehicles?" << endl;
     cout << "   1. Sort by maker.\n"
     << "   2. Sort by year.\n"
     << "   3. Sort by color.\n"
-    << "   4. Sort by weight.\n   ------------------> ";
-
+    << "   4. Sort by weight.   ------------------> ";
 
     cin >> sortType;
     cout << endl;
