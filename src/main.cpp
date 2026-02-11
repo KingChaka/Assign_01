@@ -10,23 +10,30 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <cstring>                          // for strcpy
-#include <iomanip>                          // to prettify the display
-
+#include <cstring>                                  // for strcpy
+#include <cctype>                                   // for data validation
+#include <iomanip>                                  // to prettify the display
 using namespace std;
+
+#define WRDLEN 10
+#define VINLEN 20
+
+
+
 
 //CONSTANTS
 char *INVALID = '\0';
 
 // Typedef
-typedef char VIN[20];
+typedef char VIN[VINLEN];
 
 // Enumeration
 enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
-char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
-char strMonth[][10] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+char strColor[][WRDLEN] = { "Red", "Blue", "Green", "Black", "White" };
+char strMonth[][WRDLEN] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+char colorString[WRDLEN];
 
 
 //Class
@@ -80,7 +87,7 @@ public:
     PurchaseMonth getPurchMo() const {return purchaseMonth;}
     char *getVIN() { return vin; }
     
-    char *getColor(int colorSelect) const {
+    char *getColorStr(int colorSelect) const {
     /* *********************************************************************
     * Prints all the attributes of the class instance to console.
     *
@@ -89,26 +96,26 @@ public:
     * @exception  na         : na
     * @note                    Out-of-range or invalid entries return 'invalid'
     **********************************************************************/
-        char *colorString = '\0';
         switch(colorSelect) {
-            case Color::RED:
+            case (Color::RED):
                 strcpy(colorString,"Red");
                 break;
-            case Color::BLUE:
+            case (Color::BLUE):
                 strcpy(colorString,"Blue");
                 break;
-            case Color::GREEN:
+            case (Color::GREEN):
                 strcpy(colorString,"Green");
                 break;
-            case Color::BLACK:
+            case (Color::BLACK):
                 strcpy(colorString,"Green");
                 break;
-            case Color::WHITE:
+            case (Color::WHITE):
                 strcpy(colorString,"White");
                 break;
             default:
                 strcpy(colorString,INVALID);
         }
+        cout << "color main:" << colorString << endl;
         return colorString;
     }
 
@@ -138,7 +145,8 @@ public:
         cout << "Maker:"<< setw(9) << maker
              << " | Model: " << setw(6) << model
              << " | Year: " << setw(4) << year
-             << " | Color: " << setw(5) << strColor[color]
+             // << " | Color: " << setw(5) << strColor[color]
+             << " | Color: " << setw(5) << getColorStr(color)
              << " | Weight: " << fixed << setprecision(0) << setw(4) << weight
              << " | Engine: " << fixed << setprecision(1) << engineSize << "L"
              << " | Month: " << setw(3) << strMonth[purchaseMonth]
@@ -176,15 +184,15 @@ bool compareByMaker(Vehicle* a, Vehicle* b) {
     return isless;
 }
 
-
+/*************************************************************/
 /*********************** MAIN FUNCTION ***********************/
+/*************************************************************/
 
 int main() {
 /* **********************************
- * This function is the application driver. It
- * makes use of the Vehicle Class and sorting
- * functions to define and sort vehicle
- * instances.
+ * This function is the application driver. It makes use of the
+ * Vehicle Class and sorting functions to define and sort
+ * vehicle instances stored in memory.
  *
  * @param na : na
  * @return (int) : application exit code
@@ -203,26 +211,33 @@ int main() {
     VIN vin_input;
     PurchaseMonth month_input;
     double size_input;
-    short int sortType = 0; //consider changing to an enum later.
+    short int sortType = 0;                         //consider changing to an enum later.
 
 
-    cout << "Enter number of vehicles: ";
-    cin >> n;
+    do{
+        cout << "Enter number of vehicles: ";
+        cin >> n;
+     } while(n < 1);
+    
 
     Vehicle** vehicles = new Vehicle*[n];
 
     // Dynamically Creates Vehicle Instances
     for(short int i=0; i<n; i++){
         //prompting
-        cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
         cin >> maker_input;
 
         cout << "What model is the vehicle?  ";
         cin >> model_input;
 
-        cout << "What year is vehicle?  ";
-        cin >> year_input;
+        do{
+            cout << "What year is vehicle?  ";
+            cin >> year_input;
+            cout << endl;
+        } while (year_input < 1);
+
 
         do {
             cout << "Enter one of the numbers below...\n"
@@ -250,10 +265,11 @@ int main() {
         cout << "Engine Size (L)?  ";
         cin >> size_input;
 
-        vehicles[i] = new Vehicle(maker_input, model_input, year_input, color_input, weight_input, vin_input, month_input, size_input);
+        vehicles[i] = new Vehicle(maker_input, model_input, year_input,
+                      color_input, weight_input, vin_input, month_input, size_input);
     }
 
-    if (n > 1){                                                                 // Sorting unneeded if only one vehicle entered
+    if (n > 1){                                     // Sorting unneeded if only one vehicle entered
     cout << "\nHow do you wish to sort your vehicles?" << endl;
     cout << "   1. Sort by maker.\n"
          << "   2. Sort by year.\n"
@@ -277,8 +293,8 @@ int main() {
             sort(vehicles, vehicles+n, compareByColor);
             break;
         default:
-            cout << "Invalid input. Sort by year has been selected by default.\n";
-            sort(vehicles, vehicles+n, compareByYear);
+            // cout << "Invalid input. Sort by year has been selected by default.\n";
+            sort(vehicles, vehicles+n, compareByWeight);
     }
 
     // Display
