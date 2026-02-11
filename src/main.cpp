@@ -42,7 +42,7 @@ public:
     /* *********************************************************************
     * Class Constructor
     *
-    * @param string m         : The maker/manufacturer of the vehicle
+    * @param string m         : The maker/strColor[manufacturer of the vehicle
     * @param string mo        : The specific model of the vehicle
     * @param int y            : The year the vehicle was released
     * @param Color c          : The primary color of the vehicle
@@ -189,10 +189,17 @@ int main() {
         cin >> year_input;
 
         cout << "What color is vehicle?";
-        cout << "\n   1) Red?\n   2) Blue?";
-        cout << "\n   3) Green?\n   4) Black?";
-        cout << "\n   5) White?    ---------->  ";
+        cout << "\n   1) Red\n   2) Blue";
+        cout << "\n   3) Green\n   4) Black";
+        cout << "\n   5) White    ---------->  ";
         cin >> index;
+        while (index < 1 || index > 5){
+            cout << "Enter one of the numbers below...";
+            cout << "\n   1) Red\n   2) Blue";
+            cout << "\n   3) Green\n   4) Black";
+            cout << "\n   5) White    ---------->  ";
+            cin >> index;
+        }
         color_input = static_cast<Color>(index - 1);
 
         cout << "How much does it weight (lbs)?  ";
@@ -203,7 +210,7 @@ int main() {
 
         cout << "Purchase Month by # (ex: JAN = 1)?  ";
         cin >> index;
-        month_input = static_cast<PurchaseMonth>(index);
+        month_input = static_cast<PurchaseMonth>(index - 1);
 
         cout << "Engine Size (L)?  ";
         cin >> size_input;
@@ -238,6 +245,7 @@ int main() {
     }
 
     // Display
+    cout << "\n><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><" << endl;
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
