@@ -22,7 +22,7 @@ using namespace std;
 
 //CONSTANTS
 const string EMPTY = "\0";
-const char *INVALID = '\0';
+const char *NOT_FOUND = "Not found";
 const int YR_MIN = 1000;
 const int SORT_CNT = 4;
 const int COLOR_CNT = 5;
@@ -38,7 +38,6 @@ enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DE
 //Variables
 char monthStr[][WRDLEN] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 char colorStr[WRDLEN];
-
 
 //CLASS DEFINTION ---------------------------------------------------------
 class Vehicle {
@@ -112,13 +111,13 @@ public:
                 strcpy(colorStr,"Green");
                 break;
             case (Color::BLACK):
-                strcpy(colorStr,"Green");
+                strcpy(colorStr,"Black");
                 break;
             case (Color::WHITE):
                 strcpy(colorStr,"White");
                 break;
-            default:
-                strcpy(colorStr,INVALID);
+            default:                                // Data validation makes this impossible
+                strcpy(colorStr,NOT_FOUND);
         }
         return colorStr;
     }
@@ -146,8 +145,9 @@ public:
     * @note            na
     **********************************************************************/
         cout.width(8);
+        // Magic numbers only used for display astetics
         cout << "Maker:"<< setw(9) << maker
-             << " | Model: " << setw(6) << model
+             << " | Model: " << setw(7) << model
              << " | Year: " << setw(4) << year
              << " | Color: " << setw(5) << getColorStr(color)
              << " | Weight: " << fixed << setprecision(0) << setw(4) << weight
@@ -196,14 +196,18 @@ bool compareByColor(Vehicle* veh1, Vehicle* veh2) {
     * @exception  na        : na
     * @note                   na
     **********************************************************************/
-    bool isless = false;
-    int color1 = veh1->getColor();
-    int color2 = veh2->getColor();
+    bool isLess = false;
+    char color1[WRDLEN];
+    char color2[WRDLEN];
 
-    if (strcmp(veh1->getColorStr(color1),veh2->getColorStr(color2)) < 0){
-        isless = true;
+    strcpy(color1, veh1->getColorStr(veh1->getColor()));
+    strcpy(color2, veh2->getColorStr(veh2->getColor()));
+
+    if (strcmp(color1,color2) < 0){
+        isLess = true;
     }
-    return isless;
+
+    return isLess;
 }
 
 bool compareByMaker(Vehicle* veh1, Vehicle* veh2) {
@@ -241,7 +245,7 @@ int main() {
  * **********************************/
 
     int vehCnt = RESET;
-    int index = RESET;
+    int usrChoice = RESET;
     int yearIn = YR_MIN;
     int sortType = RESET;                               // Could be updated to an enum later.
     double weightIn = RESET;
@@ -252,7 +256,7 @@ int main() {
     Color colorIn;
     PurchaseMonth monthIn;
 
-
+    // Enters Total Number of Vehicles
     do{
          if (cin.fail() || vehCnt < 1) {
             cout << "    ERROR -- Please enter a positive integer.\n\n";
@@ -267,6 +271,12 @@ int main() {
 
     // Prompting and Dynamically Created Vehicle Instances
     for(short int i=0; i<vehCnt; i++){
+        //VARIABLE RESETS
+        usrChoice = RESET;
+        yearIn = YR_MIN;
+        weightIn = RESET;
+        engSizeIn = RESET;
+
         // VEHICLE MAKER
         cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
@@ -288,21 +298,23 @@ int main() {
 
         // VEHICLE COLOR
         do {
-            if (cin.fail() || index < 1 || index > COLOR_CNT) {
+            if (cin.fail() || usrChoice < 1 || usrChoice > COLOR_CNT) {
                 cout << "    ERROR -- Enter an integer from the menu.\n\n";
                 cin.clear();
                 cin.ignore(VINLEN,'\n');
             }
-            cout << "Enter one of the numbers below...\n"
+            cout << "What is the vehicle's primary color?\n"
+                 << "Enter one of the numbers below...\n"
                  << "   1) Red\n"
                  << "   2) Blue\n"
                  << "   3) Green\n"
                  << "   4) Black\n"
                  << "   5) White\n"
                  << "   ---------->  ";
-        } while (!(cin >> index) || index < 1 || index > COLOR_CNT);
+        } while (!(cin >> usrChoice) || usrChoice < 1 || usrChoice > COLOR_CNT);
 
-        colorIn = static_cast<Color>(index - 1);
+        colorIn = static_cast<Color>(usrChoice - 1);
+        usrChoice = RESET;
 
         //VEHICLE WEIGHT
         do {
@@ -319,27 +331,27 @@ int main() {
         cin >> vinIn;
 
         // MONTH OF PURCHASE
-        index = 1;
+        usrChoice = RESET;
         do {
-            if (cin.fail() || index < 1 || index > MONTH_CNT) {
+            if (cin.fail() || usrChoice < 1 || usrChoice > MONTH_CNT) {
                 cout << "    ERROR -- Enter an integer from 1 to 12.\n\n";
                 cin.clear();
                 cin.ignore(VINLEN,'\n');
             }
             cout << "Purchase Month by # (ex: JAN = 1)?  ";
-        } while(!(cin >> index) || index < 1 || index > MONTH_CNT);
+        } while(!(cin >> usrChoice) || usrChoice < 1 || usrChoice > MONTH_CNT);
 
-        monthIn = static_cast<PurchaseMonth>(index - 1);
+        monthIn = static_cast<PurchaseMonth>(usrChoice - 1);
 
         // SIZE OF VEHICLE ENGINE
         do {
-            if (cin.fail() || engSizeIn < 1) {
+            if (cin.fail() || engSizeIn < 0) {
                 cout << "    ERROR -- Enter a positive number.\n\n";
                 cin.clear();
                 cin.ignore(VINLEN,'\n');
             }
             cout << "Engine Size (L)?  ";
-        } while(!(cin >> engSizeIn) || engSizeIn < 1);
+        } while(!(cin >> engSizeIn) || engSizeIn < 0);
 
         // VEHICLE INSTANTIATION
         vehicles[i] = new Vehicle(makerIn, modelIn, yearIn,
@@ -374,8 +386,11 @@ int main() {
         case 3:
             sort(vehicles, vehicles+vehCnt, compareByColor);
             break;
-        default:
-            // cout << "Invalid input. Sort by year has been selected by default.\n";
+        case 4:
+            sort(vehicles, vehicles+vehCnt, compareByWeight);
+            break;
+        default:                                    // Data validation makes this impossible
+            cout << "Sort by year has been selected by default.\n";
             sort(vehicles, vehicles+vehCnt, compareByWeight);
     }
 
