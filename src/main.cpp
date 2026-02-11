@@ -2,8 +2,8 @@
 *  Name: Brandon Crenshaw
 *  Assignment: #1 C++ Review : VehicleManageSys
 *  Purpose: Contains a Vehicle class and main function.
-*           The code demonstrates a functional 
-*		    understanding of OOP.
+*           The code demonstrates a functional
+*           understanding of OOP.
 *
 ************************************************* */
 
@@ -12,7 +12,11 @@
 #include <string>
 #include <cstring>                          // for strcpy
 #include <iomanip>                          // to prettify the display
+
 using namespace std;
+
+//CONSTANTS
+char *INVALID = '\0';
 
 // Typedef
 typedef char VIN[20];
@@ -35,7 +39,7 @@ private:
     double engineSize;
     Color color;
     VIN vin;
-    PurchaseMonth purchaseMonth;  
+    PurchaseMonth purchaseMonth;
 
 public:
     Vehicle(string m, string mo, int y, Color c, double w, const char* v, PurchaseMonth pm, double es) {
@@ -46,7 +50,7 @@ public:
     * @param string mo        : The specific model of the vehicle
     * @param int y            : The year the vehicle was released
     * @param Color c          : The primary color of the vehicle
-    * @param double w         : The weight of the car in pounds      
+    * @param double w         : The weight of the car in pounds
     * @param char* v          : The vehicle identification number
     * @param PurchaseMonth pm : The month the vehicle was purchased
     * @param double es        : The size of the of vehicle's engine in liters
@@ -74,8 +78,40 @@ public:
     double getWeight() const { return weight; }
     double getEngineSize() const { return engineSize; }
     PurchaseMonth getPurchMo() const {return purchaseMonth;}
-    char* getVIN() { return vin; }
+    char *getVIN() { return vin; }
     
+    char *getColor(int colorSelect) const {
+    /* *********************************************************************
+    * Prints all the attributes of the class instance to console.
+    *
+    * @param int colorSelect : Selects the vehicle color by enumeration index
+    * @return (string)       : Returns the string value of the selected color
+    * @exception  na         : na
+    * @note                    Out-of-range or invalid entries return 'invalid'
+    **********************************************************************/
+        char *colorString = '\0';
+        switch(colorSelect) {
+            case Color::RED:
+                strcpy(colorString,"Red");
+                break;
+            case Color::BLUE:
+                strcpy(colorString,"Blue");
+                break;
+            case Color::GREEN:
+                strcpy(colorString,"Green");
+                break;
+            case Color::BLACK:
+                strcpy(colorString,"Green");
+                break;
+            case Color::WHITE:
+                strcpy(colorString,"White");
+                break;
+            default:
+                strcpy(colorString,INVALID);
+        }
+        return colorString;
+    }
+
     /**********************
     Mutators
     ***********************/
@@ -87,7 +123,7 @@ public:
     void setEngineSize(double engSz) { engineSize = engSz; }
     void setPurchMo(PurchaseMonth pMon) {purchaseMonth = pMon; }
     void setWeight(VIN vNum) { strcpy(vin, vNum); }
-        
+
 
     void display() const {
     /* *********************************************************************
@@ -155,7 +191,7 @@ int main() {
  * @exception na : na
  * @note na
  * **********************************/
-     
+
     int n;
     int index;
 
@@ -188,18 +224,17 @@ int main() {
         cout << "What year is vehicle?  ";
         cin >> year_input;
 
-        cout << "What color is vehicle?";
-        cout << "\n   1) Red\n   2) Blue";
-        cout << "\n   3) Green\n   4) Black";
-        cout << "\n   5) White    ---------->  ";
-        cin >> index;
-        while (index < 1 || index > 5){
-            cout << "Enter one of the numbers below...";
-            cout << "\n   1) Red\n   2) Blue";
-            cout << "\n   3) Green\n   4) Black";
-            cout << "\n   5) White    ---------->  ";
+        do {
+            cout << "Enter one of the numbers below...\n"
+                 << "   1) Red\n"
+                 << "   2) Blue\n"
+                 << "   3) Green\n"
+                 << "   4) Black\n"
+                 << "   5) White\n"
+                 << "   ---------->  ";
             cin >> index;
-        }
+        } while (index < 1 || index > 5);
+        
         color_input = static_cast<Color>(index - 1);
 
         cout << "How much does it weight (lbs)?  ";
@@ -221,13 +256,14 @@ int main() {
     if (n > 1){                                                                 // Sorting unneeded if only one vehicle entered
     cout << "\nHow do you wish to sort your vehicles?" << endl;
     cout << "   1. Sort by maker.\n"
-    << "   2. Sort by year.\n"
-    << "   3. Sort by color.\n"
-    << "   4. Sort by weight.   ------------------> ";
+         << "   2. Sort by year.\n"
+         << "   3. Sort by color.\n"
+         << "   4. Sort by weight.\n"
+         << "   ------------------> ";
 
     cin >> sortType;
     cout << endl;
-}
+    }
 
     //Sort (using non-class functions)
     switch(sortType) {
@@ -241,7 +277,8 @@ int main() {
             sort(vehicles, vehicles+n, compareByColor);
             break;
         default:
-            sort(vehicles, vehicles+n, compareByWeight);
+            cout << "Invalid input. Sort by year has been selected by default.\n";
+            sort(vehicles, vehicles+n, compareByYear);
     }
 
     // Display
