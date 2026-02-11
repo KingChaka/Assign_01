@@ -19,8 +19,6 @@ using namespace std;
 #define VINLEN 20
 
 
-
-
 //CONSTANTS
 char *INVALID = '\0';
 
@@ -31,7 +29,6 @@ typedef char VIN[VINLEN];
 enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
-char strColor[][WRDLEN] = { "Red", "Blue", "Green", "Black", "White" };
 char strMonth[][WRDLEN] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 char colorString[WRDLEN];
 
@@ -86,7 +83,7 @@ public:
     double getEngineSize() const { return engineSize; }
     PurchaseMonth getPurchMo() const {return purchaseMonth;}
     char *getVIN() { return vin; }
-    
+
     char *getColorStr(int colorSelect) const {
     /* *********************************************************************
     * Prints all the attributes of the class instance to console.
@@ -115,9 +112,9 @@ public:
             default:
                 strcpy(colorString,INVALID);
         }
-        cout << "color main:" << colorString << endl;
         return colorString;
     }
+
 
     /**********************
     Mutators
@@ -145,7 +142,6 @@ public:
         cout << "Maker:"<< setw(9) << maker
              << " | Model: " << setw(6) << model
              << " | Year: " << setw(4) << year
-             // << " | Color: " << setw(5) << strColor[color]
              << " | Color: " << setw(5) << getColorStr(color)
              << " | Weight: " << fixed << setprecision(0) << setw(4) << weight
              << " | Engine: " << fixed << setprecision(1) << engineSize << "L"
@@ -168,7 +164,7 @@ bool compareByYear(Vehicle* a, Vehicle* b) {
 
 bool compareByColor(Vehicle* a, Vehicle* b) {
     bool isless = false;
-    if (strcmp(strColor[a->getColor()],strColor[b->getColor()]) < 0){
+    if (strcmp(a->getColorStr(a->getColor()),b->getColorStr(b->getColor())) < 0){
         isless = true;
     }
     return isless;
@@ -183,6 +179,7 @@ bool compareByMaker(Vehicle* a, Vehicle* b) {
 
     return isless;
 }
+
 
 /*************************************************************/
 /*********************** MAIN FUNCTION ***********************/
@@ -214,31 +211,42 @@ int main() {
     short int sortType = 0;                         //consider changing to an enum later.
 
 
+
     do{
-        cout << "Enter number of vehicles: ";
-        cin >> n;
-     } while(n < 1);
-    
+         if (cin.fail()) {
+            cout << "    ERROR -- You did not enter an integer.\n";
+            cin.clear();
+            cin.ignore(VINLEN,'\n');
+        }
+        cout << "Enter the number of vehicles: ";
+    } while (!(std::cin >> n));
+
 
     Vehicle** vehicles = new Vehicle*[n];
 
-    // Dynamically Creates Vehicle Instances
+    // Prompting and Dynamically Created Vehicle Instances
     for(short int i=0; i<n; i++){
-        //prompting
+        // VEHICLE MAKER
         cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
         cin >> maker_input;
 
+        // VEHICLE MODEL
         cout << "What model is the vehicle?  ";
         cin >> model_input;
 
+        // RELEASE YEAR
         do{
+            if (cin.fail()) {
+                cout << "    ERROR -- Enter a 4-digit year.\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }
             cout << "What year is vehicle?  ";
-            cin >> year_input;
             cout << endl;
-        } while (year_input < 1);
+        } while (year_input < 1000 || !(std::cin >> year_input));
 
-
+        // VEHICLE COLOR
         do {
             cout << "Enter one of the numbers below...\n"
                  << "   1) Red\n"
@@ -249,26 +257,31 @@ int main() {
                  << "   ---------->  ";
             cin >> index;
         } while (index < 1 || index > 5);
-        
         color_input = static_cast<Color>(index - 1);
 
+        //VEHICLE WEIGHT
         cout << "How much does it weight (lbs)?  ";
         cin >> weight_input;
 
+        // VEHICLE IDENTIFICATION NUMBER
         cout << "Vin number:  ";
         cin >> vin_input;
 
+        // MONTH OF PURCHASE
         cout << "Purchase Month by # (ex: JAN = 1)?  ";
         cin >> index;
         month_input = static_cast<PurchaseMonth>(index - 1);
 
+        // SIZE OF VEHICLE ENGINE
         cout << "Engine Size (L)?  ";
         cin >> size_input;
 
+        // VEHICLE INSTANTIATION
         vehicles[i] = new Vehicle(maker_input, model_input, year_input,
                       color_input, weight_input, vin_input, month_input, size_input);
     }
 
+    // VEHICLE SORTING
     if (n > 1){                                     // Sorting unneeded if only one vehicle entered
     cout << "\nHow do you wish to sort your vehicles?" << endl;
     cout << "   1. Sort by maker.\n"
@@ -281,8 +294,7 @@ int main() {
     cout << endl;
     }
 
-    //Sort (using non-class functions)
-    switch(sortType) {
+    switch(sortType) {                              // Sort implemented here
         case 1:
             sort(vehicles, vehicles+n, compareByMaker);
             break;
@@ -298,7 +310,6 @@ int main() {
     }
 
     // Display
-    cout << "\n><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><" << endl;
     for(int i=0;i<n;i++) {
         vehicles[i]->display();
     }
