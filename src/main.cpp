@@ -1,9 +1,17 @@
+/* *************************************************
+*  Name: Brandon Crenshaw
+*  Assignment: #1 C++ Review : VehicleManageSys
+*  Purpose: Contains a Vehicle class and main function.
+*           The code demonstrates a functional 
+*		    understanding of OOP.
+*
+************************************************* */
 
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <cstring> // for strcpy
-#include <iomanip> //to pretify the output
+#include <cstring>                          // for strcpy
+#include <iomanip>                          // to prettify the display
 using namespace std;
 
 // Typedef
@@ -16,21 +24,36 @@ enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DE
 char strColor[][10] = { "Red", "Blue", "Green", "Black", "White" };
 char strMonth[][10] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 
+
 //Class
 class Vehicle {
 private:
+    int year;
     string maker;
     string model;
-    int year;
-    Color color;
     double weight;
+    double engineSize;
+    Color color;
     VIN vin;
-    PurchaseMonth purchaseMonth;
-    double engineSize; // NEW ATTRIBUTE
+    PurchaseMonth purchaseMonth;  
 
 public:
-    // Constructor
     Vehicle(string m, string mo, int y, Color c, double w, const char* v, PurchaseMonth pm, double es) {
+    /* *********************************************************************
+    * Class Constructor
+    *
+    * @param string m         : The maker/manufacturer of the vehicle
+    * @param string mo        : The specific model of the vehicle
+    * @param int y            : The year the vehicle was released
+    * @param Color c          : The primary color of the vehicle
+    * @param double w         : The weight of the car in pounds      
+    * @param char* v          : The vehicle identification number
+    * @param PurchaseMonth pm : The month the vehicle was purchased
+    * @param double es        : The size of the of vehicle's engine in liters
+    * @return na              : na
+    * @exception na           : na
+    * @note                     na
+    **********************************************************************/
         maker = m;
         model = mo;
         year = y;
@@ -41,17 +64,40 @@ public:
         engineSize = es;
     }
 
-    // Getters/Setters
-    string getMaker() const { return maker; }
+    /**********************
+    Accessors
+    ***********************/
+    string getMaker() const {return maker; }
     string getModel() const { return model; }
     int getYear() const { return year; }
     int getColor() const { return color; }
     double getWeight() const { return weight; }
     double getEngineSize() const { return engineSize; }
-    void setEngineSize(double es) { engineSize = es; }
+    PurchaseMonth getPurchMo() const {return purchaseMonth;}
+    char* getVIN() { return vin; }
+    
+    /**********************
+    Mutators
+    ***********************/
+    void setMaker(string mkr) { maker = mkr; }
+    void setModel(string mdl) { model = mdl; }
+    void setYear(int yr) { year = yr; }
+    void setColor(Color hue) { color = hue; }
+    void setWeight(double wt) { weight = wt; }
+    void setEngineSize(double engSz) { engineSize = engSz; }
+    void setPurchMo(PurchaseMonth pMon) {purchaseMonth = pMon; }
+    void setWeight(VIN vNum) { strcpy(vin, vNum); }
+        
 
-    // Display
     void display() const {
+    /* *********************************************************************
+    * Prints all the attributes of the class instance to console.
+    *
+    * @param      na : na
+    * @return (void) : There is no return for this function
+    * @exception  na : na
+    * @note            na
+    **********************************************************************/
         cout.width(8);
         cout << "Maker:"<< setw(9) << maker
              << " | Model: " << setw(6) << model
@@ -64,6 +110,8 @@ public:
              << endl;
     }
 };
+
+
 
 // Sorting comparator example
 bool compareByWeight(Vehicle* a, Vehicle* b) {
@@ -92,7 +140,22 @@ bool compareByMaker(Vehicle* a, Vehicle* b) {
     return isless;
 }
 
+
+/*********************** MAIN FUNCTION ***********************/
+
 int main() {
+/* **********************************
+ * This function is the application driver. It
+ * makes use of the Vehicle Class and sorting
+ * functions to define and sort vehicle
+ * instances.
+ *
+ * @param na : na
+ * @return (int) : application exit code
+ * @exception na : na
+ * @note na
+ * **********************************/
+     
     int n;
     int index;
 
@@ -159,7 +222,7 @@ int main() {
     cout << endl;
 }
 
-    //Sort
+    //Sort (using non-class functions)
     switch(sortType) {
         case 1:
             sort(vehicles, vehicles+n, compareByMaker);
