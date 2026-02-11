@@ -17,10 +17,16 @@ using namespace std;
 
 #define WRDLEN 10
 #define VINLEN 20
+#define RESET 1
 
 
 //CONSTANTS
-char *INVALID = '\0';
+const string EMPTY = "\0";
+const char *INVALID = '\0';
+const int YR_MIN = 1000;
+const int SORT_CNT = 4;
+const int COLOR_CNT = 5;
+const int MONTH_CNT = 12;
 
 // Typedef
 typedef char VIN[VINLEN];
@@ -29,11 +35,12 @@ typedef char VIN[VINLEN];
 enum Color { RED, BLUE, GREEN, BLACK, WHITE };
 enum PurchaseMonth { JAN=1, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
 
-char strMonth[][WRDLEN] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
-char colorString[WRDLEN];
+//Variables
+char monthStr[][WRDLEN] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+char colorStr[WRDLEN];
 
 
-//Class
+//CLASS DEFINTION ---------------------------------------------------------
 class Vehicle {
 private:
     int year;
@@ -46,28 +53,29 @@ private:
     PurchaseMonth purchaseMonth;
 
 public:
-    Vehicle(string m, string mo, int y, Color c, double w, const char* v, PurchaseMonth pm, double es) {
+    Vehicle(string mkr, string mo, int yr, Color clr, double wt,
+            const char* vnum, PurchaseMonth pm, double es) {
     /* *********************************************************************
     * Class Constructor
     *
-    * @param string m         : The maker/strColor[manufacturer of the vehicle
+    * @param string mkr       : The maker/strColor[manufacturer of the vehicle
     * @param string mo        : The specific model of the vehicle
-    * @param int y            : The year the vehicle was released
-    * @param Color c          : The primary color of the vehicle
-    * @param double w         : The weight of the car in pounds
-    * @param char* v          : The vehicle identification number
+    * @param int yr           : The year the vehicle was released
+    * @param Color clr        : The primary color of the vehicle
+    * @param double wt        : The weight of the car in pounds
+    * @param char* vnum       : The vehicle identification number
     * @param PurchaseMonth pm : The month the vehicle was purchased
     * @param double es        : The size of the of vehicle's engine in liters
     * @return na              : na
     * @exception na           : na
     * @note                     na
     **********************************************************************/
-        maker = m;
+        maker = mkr;
         model = mo;
-        year = y;
-        color = c;
-        weight = w;
-        strcpy(vin, v);
+        year = yr;
+        color = clr;
+        weight = wt;
+        strcpy(vin, vnum);
         purchaseMonth = pm;
         engineSize = es;
     }
@@ -95,24 +103,24 @@ public:
     **********************************************************************/
         switch(colorSelect) {
             case (Color::RED):
-                strcpy(colorString,"Red");
+                strcpy(colorStr,"Red");
                 break;
             case (Color::BLUE):
-                strcpy(colorString,"Blue");
+                strcpy(colorStr,"Blue");
                 break;
             case (Color::GREEN):
-                strcpy(colorString,"Green");
+                strcpy(colorStr,"Green");
                 break;
             case (Color::BLACK):
-                strcpy(colorString,"Green");
+                strcpy(colorStr,"Green");
                 break;
             case (Color::WHITE):
-                strcpy(colorString,"White");
+                strcpy(colorStr,"White");
                 break;
             default:
-                strcpy(colorString,INVALID);
+                strcpy(colorStr,INVALID);
         }
-        return colorString;
+        return colorStr;
     }
 
 
@@ -127,7 +135,6 @@ public:
     void setEngineSize(double engSz) { engineSize = engSz; }
     void setPurchMo(PurchaseMonth pMon) {purchaseMonth = pMon; }
     void setWeight(VIN vNum) { strcpy(vin, vNum); }
-
 
     void display() const {
     /* *********************************************************************
@@ -145,39 +152,75 @@ public:
              << " | Color: " << setw(5) << getColorStr(color)
              << " | Weight: " << fixed << setprecision(0) << setw(4) << weight
              << " | Engine: " << fixed << setprecision(1) << engineSize << "L"
-             << " | Month: " << setw(3) << strMonth[purchaseMonth]
+             << " | Month: " << setw(3) << monthStr[purchaseMonth]
              << " | VIN: " << vin
              << endl;
     }
 };
+//END OF CLASS DEFINTION --------------------------------------------------
 
-
-
-// Sorting comparator example
-bool compareByWeight(Vehicle* a, Vehicle* b) {
-    return a->getWeight() < b->getWeight();
+// SORT FUNCTIONS
+bool compareByWeight(Vehicle* veh1, Vehicle* veh2) {
+    /* *********************************************************************
+    * Determines if weight #1 is less than weight #2
+    *
+    * @param  Vehicle* veh1 : 1st vehicle being compared
+    * @param  Vehicle* veh2 : 2nd vehicle being compared
+    * @return (bool)        : Returns true if veh1 is less than veh2.
+    * @exception  na        : na
+    * @note                   na
+    **********************************************************************/
+    return veh1->getWeight() < veh2->getWeight();
 }
 
-bool compareByYear(Vehicle* a, Vehicle* b) {
-    return a->getYear() < b->getYear();
+bool compareByYear(Vehicle* veh1, Vehicle* veh2) {
+    /* *********************************************************************
+    * Determines if year #1 is less than year #2
+    *
+    * @param  Vehicle* veh1 : 1st vehicle being compared
+    * @param  Vehicle* veh2 : 2nd vehicle being compared
+    * @return (bool)        : Returns true if veh1 is less than veh2.
+    * @exception  na        : na
+    * @note                   na
+    **********************************************************************/
+    return veh1->getYear() < veh2->getYear();
 }
 
-bool compareByColor(Vehicle* a, Vehicle* b) {
+bool compareByColor(Vehicle* veh1, Vehicle* veh2) {
+    /* *********************************************************************
+    * Determines if color #1 comes before color #2 (alphabetically)
+    *
+    * @param  Vehicle* veh1 : 1st vehicle being compared
+    * @param  Vehicle* veh2 : 2nd vehicle being compared
+    * @return (bool)        : Returns true if veh1 is earlier than veh2.
+    * @exception  na        : na
+    * @note                   na
+    **********************************************************************/
     bool isless = false;
-    if (strcmp(a->getColorStr(a->getColor()),b->getColorStr(b->getColor())) < 0){
+    int color1 = veh1->getColor();
+    int color2 = veh2->getColor();
+
+    if (strcmp(veh1->getColorStr(color1),veh2->getColorStr(color2)) < 0){
         isless = true;
     }
     return isless;
 }
 
-bool compareByMaker(Vehicle* a, Vehicle* b) {
-    //return a->getMaker() < b->getMaker();
-    bool isless = false;
-    if(a->getMaker().compare(b->getMaker())<0){
-        isless = true;
+bool compareByMaker(Vehicle* veh1, Vehicle* veh2) {
+    /* *********************************************************************
+    * Determines if maker #1 comes before maker #2 (alphabetically)
+    *
+    * @param  Vehicle* veh1 : 1st vehicle being compared
+    * @param  Vehicle* veh2 : 2nd vehicle being compared
+    * @return (bool)        : Returns true if veh1 is earlier than veh2.
+    * @exception  na        : na
+    * @note                   na
+    **********************************************************************/
+    bool isLess = false;
+    if(veh1->getMaker().compare(veh2->getMaker())<0){
+        isLess = true;
     }
-
-    return isless;
+    return isLess;
 }
 
 
@@ -197,57 +240,59 @@ int main() {
  * @note na
  * **********************************/
 
-    int n;
-    int index;
-
-    string maker_input;
-    string model_input;
-    int year_input;
-    Color color_input;
-    double weight_input;
-    VIN vin_input;
-    PurchaseMonth month_input;
-    double size_input;
-    short int sortType = 0;                         //consider changing to an enum later.
-
+    int vehCnt = RESET;
+    int index = RESET;
+    int yearIn = YR_MIN;
+    int sortType = RESET;                               // Could be updated to an enum later.
+    double weightIn = RESET;
+    double engSizeIn = RESET;
+    string makerIn = EMPTY;
+    string modelIn = EMPTY;
+    VIN vinIn;
+    Color colorIn;
+    PurchaseMonth monthIn;
 
 
     do{
-         if (cin.fail()) {
-            cout << "    ERROR -- You did not enter an integer.\n";
+         if (cin.fail() || vehCnt < 1) {
+            cout << "    ERROR -- Please enter a positive integer.\n\n";
             cin.clear();
             cin.ignore(VINLEN,'\n');
         }
         cout << "Enter the number of vehicles: ";
-    } while (!(std::cin >> n));
+    } while (!(cin >> vehCnt) || vehCnt < 1);
 
 
-    Vehicle** vehicles = new Vehicle*[n];
+    Vehicle** vehicles = new Vehicle*[vehCnt];
 
     // Prompting and Dynamically Created Vehicle Instances
-    for(short int i=0; i<n; i++){
+    for(short int i=0; i<vehCnt; i++){
         // VEHICLE MAKER
         cout << "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         cout << "Who is the maker for vehicle #" << i+1 << " ?  ";
-        cin >> maker_input;
+        cin >> makerIn;
 
         // VEHICLE MODEL
         cout << "What model is the vehicle?  ";
-        cin >> model_input;
+        cin >> modelIn;
 
         // RELEASE YEAR
         do{
-            if (cin.fail()) {
-                cout << "    ERROR -- Enter a 4-digit year.\n";
+            if (cin.fail() || yearIn < YR_MIN) {
+                cout << "    ERROR -- Enter a 4-digit year.\n\n";
                 cin.clear();
                 cin.ignore(VINLEN,'\n');
             }
             cout << "What year is vehicle?  ";
-            cout << endl;
-        } while (year_input < 1000 || !(std::cin >> year_input));
+        } while ( !(cin >> yearIn) || yearIn < YR_MIN);
 
         // VEHICLE COLOR
         do {
+            if (cin.fail() || index < 1 || index > COLOR_CNT) {
+                cout << "    ERROR -- Enter an integer from the menu.\n\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }
             cout << "Enter one of the numbers below...\n"
                  << "   1) Red\n"
                  << "   2) Blue\n"
@@ -255,68 +300,94 @@ int main() {
                  << "   4) Black\n"
                  << "   5) White\n"
                  << "   ---------->  ";
-            cin >> index;
-        } while (index < 1 || index > 5);
-        color_input = static_cast<Color>(index - 1);
+        } while (!(cin >> index) || index < 1 || index > COLOR_CNT);
+
+        colorIn = static_cast<Color>(index - 1);
 
         //VEHICLE WEIGHT
-        cout << "How much does it weight (lbs)?  ";
-        cin >> weight_input;
+        do {
+            if (cin.fail() || weightIn < 1) {
+                cout << "    ERROR -- Enter a positive integer.\n\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }
+            cout << "How much does it weight (lbs)?  ";
+        } while (!(cin >> weightIn) || weightIn < 1);
 
         // VEHICLE IDENTIFICATION NUMBER
         cout << "Vin number:  ";
-        cin >> vin_input;
+        cin >> vinIn;
 
         // MONTH OF PURCHASE
-        cout << "Purchase Month by # (ex: JAN = 1)?  ";
-        cin >> index;
-        month_input = static_cast<PurchaseMonth>(index - 1);
+        index = 1;
+        do {
+            if (cin.fail() || index < 1 || index > MONTH_CNT) {
+                cout << "    ERROR -- Enter an integer from 1 to 12.\n\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }
+            cout << "Purchase Month by # (ex: JAN = 1)?  ";
+        } while(!(cin >> index) || index < 1 || index > MONTH_CNT);
+
+        monthIn = static_cast<PurchaseMonth>(index - 1);
 
         // SIZE OF VEHICLE ENGINE
-        cout << "Engine Size (L)?  ";
-        cin >> size_input;
+        do {
+            if (cin.fail() || engSizeIn < 1) {
+                cout << "    ERROR -- Enter a positive number.\n\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }
+            cout << "Engine Size (L)?  ";
+        } while(!(cin >> engSizeIn) || engSizeIn < 1);
 
         // VEHICLE INSTANTIATION
-        vehicles[i] = new Vehicle(maker_input, model_input, year_input,
-                      color_input, weight_input, vin_input, month_input, size_input);
+        vehicles[i] = new Vehicle(makerIn, modelIn, yearIn,
+                      colorIn, weightIn, vinIn, monthIn, engSizeIn);
     }
 
     // VEHICLE SORTING
-    if (n > 1){                                     // Sorting unneeded if only one vehicle entered
-    cout << "\nHow do you wish to sort your vehicles?" << endl;
-    cout << "   1. Sort by maker.\n"
-         << "   2. Sort by year.\n"
-         << "   3. Sort by color.\n"
-         << "   4. Sort by weight.\n"
-         << "   ------------------> ";
+    if (vehCnt > 1){ // Sorting only needed if more than one vehicle.
+        do {
+            if (cin.fail() || sortType < 1 || sortType > SORT_CNT) {
+                cout << "    ERROR -- Enter an integer from the menu.\n\n";
+                cin.clear();
+                cin.ignore(VINLEN,'\n');
+            }                                       // end of if statement
 
-    cin >> sortType;
-    cout << endl;
-    }
+            cout << "How do you wish to sort your vehicles?" << endl;
+            cout << "   1. Sort by maker.\n"
+                 << "   2. Sort by year.\n"
+                 << "   3. Sort by color.\n"
+                 << "   4. Sort by weight.\n"
+                 << "   ------------------> ";
+        } while( !(cin >> sortType) || sortType < 1 || sortType > SORT_CNT);
+    }                                               // end of if statement
 
     switch(sortType) {                              // Sort implemented here
         case 1:
-            sort(vehicles, vehicles+n, compareByMaker);
+            sort(vehicles, vehicles+vehCnt, compareByMaker);
             break;
         case 2:
-            sort(vehicles, vehicles+n, compareByYear);
+            sort(vehicles, vehicles+vehCnt, compareByYear);
             break;
         case 3:
-            sort(vehicles, vehicles+n, compareByColor);
+            sort(vehicles, vehicles+vehCnt, compareByColor);
             break;
         default:
             // cout << "Invalid input. Sort by year has been selected by default.\n";
-            sort(vehicles, vehicles+n, compareByWeight);
+            sort(vehicles, vehicles+vehCnt, compareByWeight);
     }
 
     // Display
-    for(int i=0;i<n;i++) {
+    cout << endl;
+    for(int i=0;i<vehCnt;i++) {
         vehicles[i]->display();
     }
     cout << endl;
 
     // Cleanup
-    for(int i=0;i<n;i++) delete vehicles[i];
+    for(int i=0;i<vehCnt;i++) delete vehicles[i];
     delete[] vehicles;
 
     return 0;
